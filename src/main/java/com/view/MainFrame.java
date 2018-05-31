@@ -21,13 +21,18 @@ import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+
+import java.awt.Color;
 
 public class MainFrame {
 
-	private JFrame frame;
+	public JFrame frame;
 	private JPanel panel_invoice;
-	private JTabbedPane tabbedPane_customerAccount;
-	private JTextField textField_customerId;
+	public static JTextField textField_customerId;
+	public static JTable table_invoice;
+	public static JTextField textField_totalAmount;
 	private JTextField textField_customerName;
 	private JTextField textField_mobileNumber;
 	private JTextField textField_addressLine1;
@@ -37,27 +42,32 @@ public class MainFrame {
 	private JTextField textField_state;
 	private JTextField textField_date;
 	private JTextField textField_amtInWords;
-	private JTextField textField_totalAmount;
 	private JTextField textField_amountPaid;
 	private JTextField textField_discountAmount;
 	private JTextField textField_balanceAmount;
-	private JTable table_invoice;
+	private JPanel panel_search;
+	private JPanel panel_customerAccount;
+	private JTextField textField_search_customerName;
+	private JScrollPane scrollPane_invoice;
+	private JPanel panel_invoice_top;
+	private JPanel panel_invoice_botton;
 
+	public static int invoiceItemsCount=0;
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainFrame window = new MainFrame();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					MainFrame window = new MainFrame();
+//					window.frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
@@ -119,16 +129,43 @@ public class MainFrame {
 		panel_footer.setLayout(gl_panel_footer);
 		
 		JButton btnInvoice = new JButton("Invoice");
+		btnInvoice.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				panel_cards.removeAll();
+				panel_cards.add(panel_invoice);
+				panel_cards.repaint();
+				panel_cards.revalidate();
+			}
+		});
 		
 		JButton btnCustomer = new JButton("Customer Account");
+		btnCustomer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panel_cards.removeAll();
+				panel_cards.add(panel_customerAccount);
+				panel_cards.repaint();
+				panel_cards.revalidate();
+			}
+		});
+		
+		JButton btnSearch = new JButton("Search");
+		btnSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panel_cards.removeAll();
+				panel_cards.add(panel_search);
+				panel_cards.repaint();
+				panel_cards.revalidate();
+			}
+		});
 		GroupLayout gl_panel_left_options = new GroupLayout(panel_left_options);
 		gl_panel_left_options.setHorizontalGroup(
 			gl_panel_left_options.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_left_options.createSequentialGroup()
 					.addGap(16)
 					.addGroup(gl_panel_left_options.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnCustomer, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
-						.addComponent(btnInvoice, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE))
+						.addComponent(btnSearch, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnCustomer, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+						.addComponent(btnInvoice, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		gl_panel_left_options.setVerticalGroup(
@@ -138,7 +175,9 @@ public class MainFrame {
 					.addComponent(btnInvoice)
 					.addGap(18)
 					.addComponent(btnCustomer)
-					.addContainerGap(427, Short.MAX_VALUE))
+					.addGap(18)
+					.addComponent(btnSearch)
+					.addContainerGap(356, Short.MAX_VALUE))
 		);
 		panel_left_options.setLayout(gl_panel_left_options);
 		
@@ -164,34 +203,47 @@ public class MainFrame {
 		panel_invoice = new JPanel();
 		panel_cards.add(panel_invoice, "name_5204846530869");
 		
-		JPanel panel_invoice_top = new JPanel();
+		panel_invoice_top = new JPanel();
 		panel_invoice_top.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		
-		JPanel panel_invoice_botton = new JPanel();
+		panel_invoice_botton = new JPanel();
 		panel_invoice_botton.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		
-		JScrollPane scrollPane_invoice = new JScrollPane();
+		table_invoice = new JTable();
+		table_invoice.setBorder(new LineBorder(new Color(0, 0, 0)));
+		table_invoice.setShowVerticalLines(false);
+		table_invoice.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"S no.", "Particulars", "Qty", "Price", "M.C/pc", "M.C/gm", "Rate/gm", "Weight", "Amount"
+			}
+		));		
+		
+		//JScrollPane scrollPane_invoice = new JScrollPane(); // edited by me
+		scrollPane_invoice = new JScrollPane(table_invoice);
 		GroupLayout gl_panel_invoice = new GroupLayout(panel_invoice);
 		gl_panel_invoice.setHorizontalGroup(
 			gl_panel_invoice.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_invoice.createSequentialGroup()
-					.addGroup(gl_panel_invoice.createParallelGroup(Alignment.TRAILING, false)
+					.addGroup(gl_panel_invoice.createParallelGroup(Alignment.TRAILING)
 						.addComponent(panel_invoice_top, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-						.addComponent(panel_invoice_botton, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-						.addComponent(scrollPane_invoice, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 1013, Short.MAX_VALUE))
-					.addContainerGap(71, Short.MAX_VALUE))
+						.addGroup(Alignment.LEADING, gl_panel_invoice.createParallelGroup(Alignment.TRAILING, false)
+							.addComponent(panel_invoice_botton, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+							.addComponent(scrollPane_invoice, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 1013, Short.MAX_VALUE)))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		gl_panel_invoice.setVerticalGroup(
 			gl_panel_invoice.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_invoice.createSequentialGroup()
-					.addComponent(panel_invoice_top, GroupLayout.PREFERRED_SIZE, 139, GroupLayout.PREFERRED_SIZE)
+					.addComponent(panel_invoice_top, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scrollPane_invoice, GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+					.addComponent(scrollPane_invoice, GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panel_invoice_botton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 		);
 		
-		table_invoice = new JTable();
+		
 		scrollPane_invoice.setColumnHeaderView(table_invoice);
 		
 		JLabel lblPaidInWords = new JLabel("PAID IN WORDS :");
@@ -503,14 +555,53 @@ public class MainFrame {
 		panel_invoice_top.setLayout(gl_panel_invoice_top);
 		panel_invoice.setLayout(gl_panel_invoice);
 		
-		tabbedPane_customerAccount = new JTabbedPane(JTabbedPane.TOP);
-		panel_cards.add(tabbedPane_customerAccount, "name_5297673933862");
+		panel_search = new JPanel();
+		panel_cards.add(panel_search, "name_204071657618946");
 		
-		JPanel panel = new JPanel();
-		tabbedPane_customerAccount.addTab("New tab", null, panel, null);
+		JPanel panel_search_top = new JPanel();
+		panel_search_top.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		GroupLayout gl_panel_search = new GroupLayout(panel_search);
+		gl_panel_search.setHorizontalGroup(
+			gl_panel_search.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_search.createSequentialGroup()
+					.addComponent(panel_search_top, GroupLayout.PREFERRED_SIZE, 1010, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
+		gl_panel_search.setVerticalGroup(
+			gl_panel_search.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_search.createSequentialGroup()
+					.addComponent(panel_search_top, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(390, Short.MAX_VALUE))
+		);
 		
-		JPanel panel_1 = new JPanel();
-		tabbedPane_customerAccount.addTab("New tab", null, panel_1, null);
+		JLabel lblCustomerName_1 = new JLabel("Customer Name");
+		
+		textField_search_customerName = new JTextField();
+		textField_search_customerName.setColumns(10);
+		GroupLayout gl_panel_search_top = new GroupLayout(panel_search_top);
+		gl_panel_search_top.setHorizontalGroup(
+			gl_panel_search_top.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_search_top.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblCustomerName_1)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(textField_search_customerName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(774, Short.MAX_VALUE))
+		);
+		gl_panel_search_top.setVerticalGroup(
+			gl_panel_search_top.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel_search_top.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel_search_top.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblCustomerName_1)
+						.addComponent(textField_search_customerName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(86, Short.MAX_VALUE))
+		);
+		panel_search_top.setLayout(gl_panel_search_top);
+		panel_search.setLayout(gl_panel_search);
+		
+		panel_customerAccount = new JPanel();
+		panel_cards.add(panel_customerAccount, "name_204125588786905");
 		frame.getContentPane().setLayout(groupLayout);
 		
 		JMenuBar menuBar = new JMenuBar();
