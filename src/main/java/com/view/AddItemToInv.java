@@ -16,6 +16,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
@@ -27,6 +28,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.beans.PropertyChangeEvent;
 
 public class AddItemToInv extends JPanel {
@@ -54,6 +57,9 @@ public class AddItemToInv extends JPanel {
 	private JRadioButton radioButton_mcp;
 	private JButton btnOk;
 	private JButton btnReset;
+	
+	private static final String COMMIT_ACTION = "commit";
+	
 	/**
 	 * Create the panel.
 	 */
@@ -234,6 +240,24 @@ public class AddItemToInv extends JPanel {
 		
 		textField_particular = new JTextField();
 		textField_particular.setColumns(10);
+		
+		//////prnjn Autocomplete test
+		textField_particular.setFocusTraversalKeysEnabled(false);
+		List<String> keywords = new ArrayList<String>();
+		keywords.add("example");
+        keywords.add("autocomplete");
+        keywords.add("stackabuse");
+        keywords.add("java");
+		Autocomplete autoComplete = new Autocomplete(textField_particular, keywords);
+		textField_particular.getDocument().addDocumentListener(autoComplete);
+		
+		// Maps the tab key to the commit action, which finishes the autocomplete
+		// when given a suggestion
+		textField_particular.getInputMap().put(KeyStroke.getKeyStroke("TAB"), COMMIT_ACTION);
+		textField_particular.getActionMap().put(COMMIT_ACTION, autoComplete.new CommitAction());
+		
+		///// prnjn autocomplete test end ////////
+		
 		
 		JLabel label_2 = new JLabel("Weight");
 		
